@@ -41,7 +41,6 @@ jobs:
           git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
           
     - name: Push changes
-      if: github.ref == 'refs/heads/main'
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.PAT }}
+        github_token: ${{ env.TOKEN }}
