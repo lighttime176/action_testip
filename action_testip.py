@@ -18,3 +18,5 @@ headers = {
 
 response = requests.get('https://myip.ipip.net/', headers=headers)
 print(response.text)
+with open('file.txt', 'w', encoding='utf-8') as file:
+    file.writelines(response.text)
