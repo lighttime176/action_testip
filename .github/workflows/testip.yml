@@ -40,7 +40,8 @@ jobs:
           git add -A
           git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
           
-    - name: push changes
-      uses: ad-m/github-push-action@v0.6.0
+    - name: Push changes
+      if: github.ref == 'refs/heads/main'
+      uses: ad-m/github-push-action@master
       with:
-        force_with_lease: true
+        github_token: ${{ secrets.PAT }}
