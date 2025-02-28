@@ -23,16 +23,22 @@ with open('file.txt', 'w', encoding='utf-8') as file:
     file.writelines(response.text)
 
 
-# 配置基本的日志
+
+
+def decode_unicode(message):
+    return message.encode('utf-8').decode('unicode_escape')
+
+# 配置日志
 logging.basicConfig(
-    level=logging.DEBUG,  # 设置日志级别，DEBUG 表示记录所有级别的日志
-    format='%(asctime)s - %(levelname)s - %(message)s',  # 设置日志格式
-    handlers=[logging.StreamHandler()]  # 设置日志输出到控制台
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
 )
 
-# 打印不同级别的日志
-logging.debug("这是一个调试信息")
-logging.info("这是一个信息")
-logging.warning("这是一个警告")
-logging.error("这是一个错误")
-logging.critical("这是一个严重错误")
+# 记录包含中文的日志
+logging.debug(decode_unicode("这是一个调试信息"))
+logging.info(decode_unicode("这是一个信息"))
+logging.warning(decode_unicode("这是一个警告"))
+logging.error(decode_unicode("这是一个错误"))
+logging.critical(decode_unicode("这是一个严重错误"))
+
