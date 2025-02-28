@@ -25,14 +25,17 @@ with open('file.txt', 'w', encoding='utf-8') as file:
 
 
 print(sys.getdefaultencoding())  # 检查默认编码
-# 配置日志记录器，确保文件使用 UTF-8 编码
+# 配置日志记录器
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.DEBUG,  # 设置日志级别为 DEBUG
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.FileHandler('app.log', encoding='utf-8')]  # 确保文件编码为 UTF-8
+    handlers=[
+        logging.StreamHandler(),  # 输出到控制台
+        logging.FileHandler('app.log', encoding='utf-8')  # 输出到文件
+    ]
 )
 
-# 打印日志，包含中文
+# 测试输出
 logging.debug("这是一个调试信息")
 logging.info("这是一个信息")
 logging.warning("这是一个警告")
