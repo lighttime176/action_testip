@@ -24,21 +24,18 @@ with open('file.txt', 'w', encoding='utf-8') as file:
 
 
 
-
-def decode_unicode(message):
-    return message.encode('utf-8').decode('unicode_escape')
-
-# 配置日志
+print(sys.getdefaultencoding())  # 检查默认编码
+# 配置日志记录器，确保文件使用 UTF-8 编码
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
+    handlers=[logging.FileHandler('app.log', encoding='utf-8')]  # 确保文件编码为 UTF-8
 )
 
-# 记录包含中文的日志
-logging.debug(decode_unicode("这是一个调试信息"))
-logging.info(decode_unicode("这是一个信息"))
-logging.warning(decode_unicode("这是一个警告"))
-logging.error(decode_unicode("这是一个错误"))
-logging.critical(decode_unicode("这是一个严重错误"))
+# 打印日志，包含中文
+logging.debug("这是一个调试信息")
+logging.info("这是一个信息")
+logging.warning("这是一个警告")
+logging.error("这是一个错误")
+logging.critical("这是一个严重错误")
 
