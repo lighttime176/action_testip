@@ -1,6 +1,7 @@
 import logging
 import sys
 import pytz
+import telepot
 from datetime import datetime
 
 class BeijingFormatter(logging.Formatter):
@@ -49,3 +50,18 @@ def setup_logger(log_filename='app.log', log_level=logging.DEBUG):
 # 示例
 logger = setup_logger()
 logger.info("测试日志，应该使用北京时间。")
+bot = telepot.Bot('7606640721:AAFsH0hVdbgxtHVklzTS-AfUShpYxmy0sWQ')
+chat_id = 7959508205
+params = {
+    'chat_id': '7959508205',
+    'text': 'Hello World',
+}
+
+# 发送文本消息
+bot.sendMessage(chat_id, 'Hello, Telegram!')
+
+# 发送图片
+#bot.sendPhoto(chat_id, open('111.png', 'rb'))
+
+# 发送文件
+bot.sendDocument(chat_id, open('app.log', 'rb'))
