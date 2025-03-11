@@ -30,9 +30,21 @@ jobs:
       - name: Upload app.log to Gist
         env:
           GH_TOKEN: ${{ secrets.GIST_TOKEN }}
+        shell: pwsh
         run: |
-          # 替换为你的 Gist ID，如果没有固定的 Gist ID，则可在首次运行后手动获取
-          GIST_ID="20d6a1045ee6144d9002447ce3761c13"
+          # 设置 Gist ID
+          $GIST_ID = "20d6a1045ee6144d9002447ce3761c13"
+
+          # 检查 gh 命令是否可用
+          if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+            Write-Host "GitHub CLI (gh) 未安装，尝试安装..."
+            Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/latest/download/gh_2.44.0_windows_amd64.msi" -OutFile "gh.msi"
+            Start-Process -Wait -FilePath "msiexec" -ArgumentList "/i gh.msi /quiet /norestart"
+            Remove-Item "gh.msi"
+          }
+
+          # 登录 GitHub CLI
+          gh auth status || gh auth login --with-token <<< "$env:GH_TOKEN"
 
           # 追加日志内容到 Gist
           gh gist edit $GIST_ID --add app.log || gh gist create app.log --public
