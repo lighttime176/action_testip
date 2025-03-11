@@ -48,12 +48,7 @@ def setup_logger(log_filename='app.log', log_level=logging.DEBUG):
 
     return logger
 
-# 示例
-logger = setup_logger()
-logger.info("测试日志，应该使用北京时间。")
-logger.info("1")
-logger.info("2")
-logger.info("3")
+
 
 # Gist 原始文件 URL
 GIST_URL = "https://gist.githubusercontent.com/lighttime176/6613da95125fbe353a7ed85b65493329/raw/"
@@ -80,6 +75,12 @@ def prepend_log(file_path, new_content):
         f.write(new_content + "\n" + existing_content)
 
 if __name__ == "__main__":
+    # 示例
+    logger = setup_logger()
+    logger.info("测试日志，应该使用北京时间。")
+    logger.info("1")
+    logger.info("2")
+    logger.info("3")
     gist_content = download_gist(GIST_URL)
     prepend_log(LOCAL_LOG_FILE, gist_content)
     print("日志文件已更新！")
