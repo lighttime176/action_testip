@@ -33,7 +33,7 @@ jobs:
         shell: pwsh
         run: |
           # 设置 Gist ID
-          $GIST_ID = "20d6a1045ee6144d9002447ce3761c13"
+          $GIST_ID = "6613da95125fbe353a7ed85b65493329"
 
           # 检查 gh 命令是否可用
           if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
