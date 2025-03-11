@@ -70,7 +70,7 @@ def read_local_log(file_path):
 # 写入新的日志文件内容
 def prepend_log(file_path, new_content):
     existing_content = read_local_log(file_path)
-    combined_content = new_content + "\n" + existing_content if existing_content else new_content
+    combined_content = new_content + existing_content if existing_content else new_content
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(combined_content)
 
