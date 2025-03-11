@@ -24,16 +24,15 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Run python code and capture log
-        run: |
-          python action_testip.py >> testip_log.txt 2>&1
+      - name: Run python code
+        run: python action_testip.py
 
-      - name: Upload log to Gist
+      - name: Upload app.log to Gist
         env:
           GH_TOKEN: ${{ secrets.GIST_TOKEN }}
         run: |
-          # 获取 Gist ID（如果你已有一个固定的 Gist ID，可直接替换）
+          # 替换为你的 Gist ID，如果没有固定的 Gist ID，则可在首次运行后手动获取
           GIST_ID="20d6a1045ee6144d9002447ce3761c13"
 
-          # 追加日志到 Gist
-          gh gist edit $GIST_ID --add testip_log.txt || gh gist create testip_log.txt --public
+          # 追加日志内容到 Gist
+          gh gist edit $GIST_ID --add app.log || gh gist create app.log --public
