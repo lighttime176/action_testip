@@ -26,18 +26,18 @@ jobs:
 
       - name: Run python code
         run: python action_testip.py
-      - name: commit files
-        run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add -A
-            git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
+      # - name: commit files
+      #   run: |
+      #       git config --local user.email "action@github.com"
+      #       git config --local user.name "GitHub Action"
+      #       git add -A
+      #       git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
             
-      - name: push changes
-        uses: ad-m/github-push-action@v0.8.0
-        with:
-            github_token: ${{ secrets.TOKEN }}
-            branch: main 
+      # - name: push changes
+      #   uses: ad-m/github-push-action@v0.8.0
+      #   with:
+      #       github_token: ${{ secrets.TOKEN }}
+      #       branch: main 
 
       - name: Upload app.log to Gist
         env:
