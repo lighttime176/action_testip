@@ -51,7 +51,7 @@ def setup_logger(log_filename='app.log', log_level=logging.DEBUG):
 
 
 # Gist 原始文件 URL
-GIST_URL = "https://gist.githubusercontent.com/lighttime176/6613da95125fbe353a7ed85b65493329/raw/"
+GIST_URL = "https://gist.githubusercontent.com/lighttime176/8c368150dbf24664712675a007861ec4/raw/"
 LOCAL_LOG_FILE = "app.log"
 
 # 下载 Gist 文件内容
