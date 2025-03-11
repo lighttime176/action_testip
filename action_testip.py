@@ -49,7 +49,6 @@ def setup_logger(log_filename='app.log', log_level=logging.DEBUG):
     return logger
 
 
-
 # Gist 原始文件 URL
 GIST_URL = "https://gist.githubusercontent.com/lighttime176/8c368150dbf24664712675a007861ec4/raw/app.log"
 LOCAL_LOG_FILE = "app.log"
@@ -58,21 +57,22 @@ LOCAL_LOG_FILE = "app.log"
 def download_gist(url):
     response = requests.get(url)
     response.raise_for_status()
-    return response.text
+    return response.text.strip()
 
 # 读取本地日志文件内容
 def read_local_log(file_path):
     try:
         with open(file_path, "r", encoding="utf-8") as f:
-            return f.read()
+            return f.read().strip()
     except FileNotFoundError:
         return ""
 
 # 写入新的日志文件内容
 def prepend_log(file_path, new_content):
     existing_content = read_local_log(file_path)
+    combined_content = new_content + "\n" + existing_content if existing_content else new_content
     with open(file_path, "w", encoding="utf-8") as f:
-        f.write(new_content + "\n" + existing_content)
+        f.write(combined_content)
 
 if __name__ == "__main__":
     # 示例
@@ -84,4 +84,3 @@ if __name__ == "__main__":
     gist_content = download_gist(GIST_URL)
     prepend_log(LOCAL_LOG_FILE, gist_content)
     print("日志文件已更新！")
-
