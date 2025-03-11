@@ -1,12 +1,6 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: testip
 
 on:
-  #schedule:
-    # 设置启动时间，为 UTC 时间, UTC23点 对应北京时间早7点
-    #- cron : '00 23 * * *'
   workflow_dispatch:
 
 permissions:
@@ -17,31 +11,29 @@ permissions:
 
 jobs:
   build:
-
     runs-on: windows-latest
     env:
       TZ: Asia/Shanghai
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-        cache: 'pip' # caching pip dependencies
-    - run: pip install -r requirements.txt
-    - name: Run python code
-      run: |
-        python action_testip.py
-      env:
-        APP_ID: ${{ secrets.APP_ID }}
-    - name: commit files
-      run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
-          
-    - name: push changes
-      uses: ad-m/github-push-action@v0.8.0
-      with:
-          github_token: ${{ secrets.TOKEN }}
-          branch: main 
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip' # caching pip dependencies
+
+      - run: pip install -r requirements.txt
+
+      - name: Run python code and capture log
+        run: |
+          python action_testip.py >> testip_log.txt 2>&1
+
+      - name: Upload log to Gist
+        env:
+          GH_TOKEN: ${{ secrets.GIST_TOKEN }}
+        run: |
+          # 获取 Gist ID（如果你已有一个固定的 Gist ID，可直接替换）
+          GIST_ID="20d6a1045ee6144d9002447ce3761c13"
+
+          # 追加日志到 Gist
+          gh gist edit $GIST_ID --add testip_log.txt || gh gist create testip_log.txt --public
