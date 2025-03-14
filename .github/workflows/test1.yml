@@ -1,0 +1,66 @@
+name: testip
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip' # caching pip dependencies
+          github_token: ${{ secrets.TOKEN }}
+
+      - run: pip install -r requirements.txt
+
+      - name: Run python code
+        run: python action_testip.py
+      # - name: commit files
+      #   run: |
+      #       git config --local user.email "action@github.com"
+      #       git config --local user.name "GitHub Action"
+      #       git add -A
+      #       git diff-index --quiet HEAD || (git commit -a -m "updated logs" --allow-empty)
+            
+      # - name: push changes
+      #   uses: ad-m/github-push-action@v0.8.0
+      #   with:
+      #       github_token: ${{ secrets.TOKEN }}
+      #       branch: main 
+
+      # - name: Upload app.log to Gist
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GIST_TOKEN }}
+      #   shell: pwsh
+      #   run: |
+      #     # 设置 Gist ID
+      #     $GIST_ID = "8c368150dbf24664712675a007861ec4"
+
+      #     # 检查 gh 命令是否可用
+      #     if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
+      #       Write-Host "GitHub CLI (gh) 未安装，尝试安装..."
+      #       Invoke-WebRequest -Uri "https://github.com/cli/cli/releases/latest/download/gh_2.44.0_windows_amd64.msi" -OutFile "gh.msi"
+      #       Start-Process -Wait -FilePath "msiexec" -ArgumentList "/i gh.msi /quiet /norestart"
+      #       Remove-Item "gh.msi"
+      #     }
+
+      #     # 配置 GitHub CLI 认证
+      #     echo $env:GH_TOKEN | gh auth login --with-token
+
+      #     # 确保 gh 认证成功
+      #     gh auth status
+
+      #     # 追加日志内容到 Gist
+      #     gh gist edit $GIST_ID --add app.log || gh gist create app.log --public
