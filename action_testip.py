@@ -1,86 +1,46 @@
 import logging
+import os
+import re
 import sys
-import pytz
-import telepot
-from datetime import datetime
-import requests
+import time
+from DrissionPage import ChromiumOptions, ChromiumPage
 
-class BeijingFormatter(logging.Formatter):
-    """ 自定义 Formatter，强制使用北京时间 """
-    def formatTime(self, record, datefmt=None):
-        beijing_tz = pytz.timezone("Asia/Shanghai")
-        dt = datetime.fromtimestamp(record.created, beijing_tz)
-        return dt.strftime(datefmt or "%Y-%m-%d %H:%M:%S")
 
-def setup_logger(log_filename='app.log', log_level=logging.DEBUG):
-    """
-    设置日志记录器，支持输出到控制台和文件，确保中文字符正常显示，时间强制使用北京时间。
-
-    :param log_filename: 日志文件的文件名 (默认 'app.log')
-    :param log_level: 日志级别，默认 DEBUG
-    :return: logger 对象
-    """
-    # 确保 Python 输出到控制台的编码为 UTF-8 (适用于 Python 3.7+)
-    sys.stdout.reconfigure(encoding="utf-8")
-    
-    # 创建自定义 Logger
+def logging_init():
     logger = logging.getLogger('my_logger')
-    logger.setLevel(log_level)
-
-    # 创建控制台处理器
-    console_handler = logging.StreamHandler(sys.stdout)
-    console_handler.setLevel(log_level)
-
-    # 创建文件处理器
-    file_handler = logging.FileHandler(log_filename, encoding='utf-8')
-    file_handler.setLevel(log_level)
-
-    # 创建自定义格式器，使用北京时间
-    formatter = BeijingFormatter('%(asctime)s - %(levelname)s - %(message)s')
-
-    # 设置格式器
-    console_handler.setFormatter(formatter)
-    file_handler.setFormatter(formatter)
-
-    # 将处理器添加到 logger
-    logger.addHandler(console_handler)
-    logger.addHandler(file_handler)
-
+    logger.setLevel(logging.INFO)
+    
+    # 确保不重复添加 handler
+    if not logger.handlers:
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        
+        # 确保 coco 目录存在
+        os.makedirs('coco', exist_ok=True)
+        file_handler = logging.FileHandler('coco/coco.log', encoding='utf-8')
+        file_handler.setLevel(logging.INFO)
+        
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(formatter)
+        file_handler.setFormatter(formatter)
+        
+        logger.addHandler(console_handler)
+        logger.addHandler(file_handler)
     return logger
 
+logger = logging_init()
+co = ChromiumOptions().auto_port()
+co.headless(True)   # 无头模式
+co.set_argument('--no-sandbox')
+co.set_argument('--headless=new')
+co.set_paths(browser_path="/opt/google/chrome/google-chrome")
+browser = ChromiumPage(co)
+tab = browser.latest_tab
+tab.get('https://user2.1000ws.top/#/register')
 
-# Gist 原始文件 URL
-GIST_URL = "https://gist.githubusercontent.com/lighttime176/8c368150dbf24664712675a007861ec4/raw/app.log"
-LOCAL_LOG_FILE = "app.log"
+ele = tab.ele('css=#emailPrefix')
+logger.info(ele)
+ele.input('111')
+tab.get_screenshot(path=r"1.png", full_page=True)
 
-# 下载 Gist 文件内容
-def download_gist(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.text.strip()
 
-# 读取本地日志文件内容
-def read_local_log(file_path):
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return f.read().strip()
-    except FileNotFoundError:
-        return ""
-
-# 写入新的日志文件内容
-def prepend_log(file_path, new_content):
-    existing_content = read_local_log(file_path)
-    combined_content = new_content + existing_content if existing_content else new_content
-    with open(file_path, "w", encoding="utf-8") as f:
-        f.write(combined_content)
-
-if __name__ == "__main__":
-    # 示例
-    logger = setup_logger()
-    logger.info("测试日志，应该使用北京时间。")
-    logger.info("1")
-    logger.info("2")
-    logger.info("3")
-    gist_content = download_gist(GIST_URL)
-    prepend_log(LOCAL_LOG_FILE, gist_content)
-    print("日志文件已更新！")
