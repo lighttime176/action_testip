@@ -41,6 +41,6 @@ tab.get('https://user2.1000ws.top/#/register')
 ele = tab.ele('css=#emailPrefix')
 logger.info(ele)
 ele.input('111')
-tab.get_screenshot(path=r"1.png", full_page=True)
+tab.get_screenshot(path=r"./1.png", full_page=True)
 
 
